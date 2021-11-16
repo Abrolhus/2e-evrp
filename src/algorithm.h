@@ -40,9 +40,10 @@ public:
  */
 bool isFeasibleSolution(Solution& Sol, const Instance& Inst);
 void getCheapestInsertionTo(int node, const std::vector<int>& route, const Instance& Inst, float& cost, int& place);
-Solution* construtivo(const Instance& instance, std::vector<std::vector<int>>& ser);
+Solution *construtivo(const Instance &instance, std::vector<std::vector<int>> &ser, double alfa);
 void insertInRoute(int node, std::vector<int>& route, int position);
-std::vector<std::vector<int>>& secondEchelonRoutes(const Instance& Inst, std::vector<std::vector<int>>& routes, float& totalCost);
+std::vector<std::vector<int>> &
+secondEchelonRoutes(const Instance &Inst, std::vector<std::vector<int>> &routes, float &totalCost, double alfa);
 std::vector<std::vector<int>>& firstEchelonRoutes(std::vector<std::vector<int>>& firstEchelonRoutes, const Instance& Inst, std::vector<std::vector<int>>& routes, float totalCost);
 float getRouteCost(const std::vector<int>& route, const Instance& Inst);
 float getRouteDemand(const std::vector<int>& route, const Instance& Inst);

@@ -137,54 +137,44 @@ void solutionToCsv(Solution& Sol, Instance& Inst){
     }
 }
 
+void iraceTeste(int argc, char*argv[])
+{
+    if(argc != 3)
+        exit(-1);
+
+    std::string fileName(argv[0]);
+    double alfa = atof(argv[2]);
+
+
+    Solution *sol = nullptr;
+    std::vector<std::vector<int>> ser;
+
+    Instance *inst = getInstanceFromFile(fileName);
+
+
+    sol = construtivo(*inst, ser, alfa);
+
+    cout<<sol->getCost()<<'\n';
+
+    delete sol;
+    delete inst;
+
+}
+
 int main(int argc, char* argv[]){
 
-    /*
-     * seed(time(NULL));
-     * rand_u32();
-     */
-    long seend = time(NULL);
-    cout<<"Semente: "<<seend<<'\n';
-    srand(seend);
-    //srand(1);
-    void routine(char** filenames, int nFileNames);
-    routine(argv, argc);
-    return 0;
-    /*
-    for(int i = 1; i < argc; i++) {
-        cout << argv[i] << endl;
-        Instance *Inst = getInstanceFromFile(argv[i]);
-        if(Inst == nullptr){ return -1; }
-        float solCost, localSearchCost;
-        //Instance* Inst = getInstanceFromFile(argv[1]);
-        Solution *Sol;
-        std::vector<std::vector<int>> ser;
-        Sol = construtivo(*Inst, ser); // TODO: see if passing the Inst like this uses the copy operator or not
-        bool isFeasible = isFeasibleSolution(*Sol, *Inst);
-        cout << "feasible: " << isFeasible << endl;
-        cout << "Cost:" << (double) Sol->getCost() << endl;
-        cout << "teste";
-        delete Inst;
-    }
-    */
-    float solCost, localSearchCost;
-    Instance* Inst = getInstanceFromFile(argv[1]);
-    Solution *Sol;
-    std::vector<std::vector<int>> ser;
-    Sol = construtivo(*Inst, ser); // TODO: see if passing the Inst like this uses the copy operator or not
-    bool isFeasible = isFeasibleSolution(*Sol, *Inst);
-    std::vector<std::pair<float,float>> costs;
-    Solution cpySol = *Sol; // hoping the copy operator will do the job just fine
-    solutionToCsv(cpySol, *Inst);
 
-    float autoSolCost = getSolCost(cpySol, *Inst);
-    solCost = getSolCost(cpySol, *Inst);
-    //vns::rvnd(cpySol, *Inst);
-    vns::gvns(cpySol, *Inst);
-    localSearchCost = getSolCost(cpySol, *Inst);
-    getchar();
-    solutionToCsv(cpySol, *Inst);
-    return -11;
+    if(argc != 5)
+        return -1;
+
+    long seend = atol(argv[1]);
+    srand(seend);
+
+    iraceTeste(3, &argv[2]);
+
+    return 0;
+
+
 }
 void routine(char** filenames, int nFileNames){
 
@@ -210,7 +200,7 @@ void routine(char** filenames, int nFileNames){
         bool hasSolution = false;
 
         for(int c = 0; c < 50; c++) {
-            sol = construtivo(*Inst, ser); // TODO: see if passing the Inst like this uses the copy operator or not
+            sol = construtivo(*Inst, ser, 0); // TODO: see if passing the Inst like this uses the copy operator or not
             //bool isFeasible = isFeasibleSolution(*Sol, *Inst);
             //bool isFeasible = true;
             float ccost = -1;

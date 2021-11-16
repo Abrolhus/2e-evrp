@@ -58,12 +58,12 @@ bool isFeasibleSolution(Solution& Sol, const Instance& Inst){
     return true;
 }
 
-Solution* construtivo(const Instance& Inst, std::vector<std::vector<int>>& secondRoutes){
+Solution *construtivo(const Instance &instance, std::vector<std::vector<int>> &ser, double alfa) {
     float totalCost = 0;
     std::vector<std::vector<int>> firstRoutes;
     // std::vector<std::vector<int>> secondRoutes;
-    secondEchelonRoutes(Inst, secondRoutes, totalCost);
-    firstEchelonRoutes(secondRoutes, Inst, firstRoutes, totalCost);
+    secondEchelonRoutes(instance, ser, totalCost, alfa);
+    firstEchelonRoutes(ser, instance, firstRoutes, totalCost);
     //TODO: DONT USE the copy operator twice. Prob use pointers to store routes.
     /*
     for(int i = 0; i < firstRoutes.size(); i++){
@@ -88,7 +88,7 @@ Solution* construtivo(const Instance& Inst, std::vector<std::vector<int>>& secon
             nFirstRoutes++;
         }
     }
-    for(const auto & secondRoute : secondRoutes){
+    for(const auto & secondRoute : ser){
         if(secondRoute.size() > 2){
             allRoutes.push_back(secondRoute);
             nSecondRoutes++;
@@ -101,7 +101,8 @@ Solution* construtivo(const Instance& Inst, std::vector<std::vector<int>>& secon
     auto* Sol = new Solution(allRoutes, nFirstRoutes, nSecondRoutes, totalCost);
     return Sol;
 }
-std::vector<std::vector<int>>& secondEchelonRoutes(const Instance& Inst, std::vector<std::vector<int>>& routes, float& totalCost){
+std::vector<std::vector<int>> &
+secondEchelonRoutes(const Instance &Inst, std::vector<std::vector<int>> &routes, float &totalCost, double alfa) {
 
     totalCost = 0;
     std::vector<bool> wasVisited(Inst.getNClients(), false);
@@ -200,8 +201,8 @@ std::vector<std::vector<int>>& secondEchelonRoutes(const Instance& Inst, std::ve
             }
             continue;
         }
-        // float alpha = 0.01;
-        int randIndex = rand()%((int)(0.3*(int)reservedList.size() + 1));
+
+        int randIndex = rand()%((int)(alfa*(int)reservedList.size() + 1));
         auto topItem = std::next(reservedList.begin(), randIndex); // gets the randomIndex element in the set //O(n)
         // auto topItem = reservedList.begin();
         auto& route = routes.at(topItem->routeIndex);
