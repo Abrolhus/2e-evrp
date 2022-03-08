@@ -6,7 +6,7 @@
 #include "LocalSearch.h"
 #include "ViabilizadorRotaEv.h"
 
-/*
+
 
 using namespace GreedyAlgNS;
 using namespace std;
@@ -14,10 +14,23 @@ using namespace NS_Auxiliary;
 using namespace NS_LocalSearch;
 using namespace NameViabRotaEv;
 
-bool GreedyAlgNS::secondEchelonGreedy(Solution& sol, const Instance& Inst, const float alpha)
-{
+class Insertion {
+    int node_id;
+    int route_id;
+    float cost;
+    // demand and battery can be get from instance,
+};
 
+bool GreedyAlgNS::secondEchelonGreedy(Solution& sol, const Instance& inst, const float alpha)
+{
+    std::vector<int> wasVisited(inst.getN_nodes());
+    int firstClientId = inst.getFirstClientIndex();
+    int lastClientId = inst.getEndClientIndex();
+    while(true){ // while unvisited client
+
+    }
     /*
+
     std::vector<int> visitedClients(1+Inst.getNSats()+Inst.getNClients());
     visitedClients[0]       = -1;
 

@@ -59,6 +59,7 @@ public:
     int getN_RechargingS() const;
     int getN_Evs() const;
     int getN_Trucks() const;
+    int getN_nodes() const; // TODO: implement this function
 
     bool isClient(int node) const;
     bool isRechargingStation(int node) const;
