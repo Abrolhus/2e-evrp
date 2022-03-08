@@ -8,7 +8,7 @@ public:
             nodeId(nodeId), time0(time0), time1(time1), battery(battery){ }
     EvNode(int nodeId, double time0, double battery) : 
             nodeId(nodeId), time0(time0), battery(battery){ 
-        time1 = time0
+        time1 = time0;
     }
     int nodeId;
     double time0; // time before service
@@ -21,11 +21,11 @@ private:
     float totalDistance;
     int satelite;
     float totalDemand;
-    float maxCapacity;
 public:
-    float getRemainingBattery();
-    float getRemainingCapacity();
+    float getRemainingBattery(const Instance&);
+    float getRemainingCapacity(const Instance&);
     const EvNode& at(int i);
     float getDemandOf(int i, const Instance& inst);
+    EvNode& operator [](int pos);
 };
 #endif

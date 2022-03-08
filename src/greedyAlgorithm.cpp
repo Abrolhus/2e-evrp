@@ -15,6 +15,7 @@ using namespace NameViabRotaEv;
 bool GreedyAlgNS::secondEchelonGreedy(Solution& sol, const Instance& Inst, const float alpha)
 {
 
+    /*
     std::vector<int> visitedClients(1+Inst.getNSats()+Inst.getNClients());
     visitedClients[0]       = -1;
 
@@ -100,6 +101,7 @@ bool GreedyAlgNS::secondEchelonGreedy(Solution& sol, const Instance& Inst, const
 
 
     return true;
+    */
 }
 
 bool GreedyAlgNS::visitAllClientes(std::vector<int> &visitedClients, const Instance &Inst)
