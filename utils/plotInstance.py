@@ -1,105 +1,72 @@
-import sys
-import pandas as pd
+import numpy as np
+print("hello");
 import matplotlib.pyplot as plt
-import random
-import math
-from glob import glob
+import sys
 
-satColors = ['#2ff3e0', '#f8d210', '#fa26a0', '#f51720']
+table = np.loadtxt(sys.argv[1])
+print(table)
 
-def mean(p1, p2):
-    return ((p1[0] + p2[0])/2, (p1[1] + p2[1])/2)
-
-def drawArrow(x1, x2, y1, y2, width, color, ls):
-    dist = math.dist((x1, y1), (x2, y2))
-    dx = 1*(x2 - x1)
-    dy = 1*(y2 - y1)
-    #dx = 0.95*(x2 - x1)
-    #dy = 0.95*(y2 - y1)
-    plt.arrow(x1, y1, dx, dy, head_width=0, length_includes_head=True, edgecolor=None, color=color, zorder=1, label=dist, ls=ls, aa=True, alpha=0.8)
-    return dist
+nTrucks = table[0][0].astype(int)
+nEvs = table[0][1].astype(int)
+nDepots = table[0][2].astype(int)
+nSats = table[0][3].astype(int)
+nRss = table[0][4].astype(int)
+nCusts = table[0][5].astype(int)
+print(nTrucks, nEvs, nDepots, nSats, nRss, nCusts)
 
 plt.figure()
-plt.grid(visible=True, alpha=0.3)
 plt.legend(prop={'size': 6})
 plt.legend()
 plt.xlabel("x")
 plt.ylabel("y")
+# these are matplotlib.patch.Patch properties
+fig, ax = plt.subplots()
+props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+plt.grid(visible=True)
 
-path = sys.argv[1]
-if not path:
-    exit(255)
-coord = pd.read_csv(path, header=None, names=['code', 'x', 'y', 'demand'], delim_whitespace=True);
-# extracting
-#   the type ((D)epot, (S)at, (C)lient, (F)Recharging Station
-#   the number (id)
-#   the x, y and the demand
-print(coord['code'].values)
-print(coord['x'].values)
-print(coord['y'].values)
-print(coord['demand'].values)
-nodeId = [int(x[1:]) for x in coord['code'].values[:-3]]
-nodeType = [x[0] for x in coord['code'].values[:-3]]
-#nodeType = coord['code'].values[:-3]
-x = [float(x) for x in coord['x'].values[:-3]]
-y = [float(x) for x in coord['y'].values[:-3]]
-demand = [float(x) for x in coord['demand'].values[:-3]]
-print("nodeId", ' ')
-print(nodeId)
-print("nodeType", ' ')
-print(nodeType)
-print("x", ' ')
-print(x)
-print("y", ' ')
-print(y)
-print("demand", ' ')
-print(demand)
+# place a text box in upper left in axes coords
 
-#could have converted to float on the go, but...
+readLine = 1;
+for i in range(readLine, readLine + nTrucks):
+    truckCap = table[i][0]
+    print("capacity", truckCap)
+    readLine += 1;
+print("Evs: ")
+for i in range(readLine, readLine + nEvs):
+    evCap = table[i][0]
+    print("capacity", evCap)
+    readLine += 1;
 
-for i in range(len(nodeId)):
-    if demand[i] != 0:
-        plt.annotate(round(demand[i]), (x[i], y[i]), color='r')
-
-    color = ''
-    marker = ''
-    if nodeType[i] == 'C':
-        marker = 'o'
-        color = '#000000'
-    if nodeType[i] == 'F':
-        marker = '^'
-        color = '#0000ff'
-    if nodeType[i] == 'S':
-        marker = 'D'
-        #color = '#00ff00'
-        color = satColors[i-1]
-    if nodeType[i] == 'D':
-        marker = 's'
-        color = '#ff0000'
-    for j in range(i, len(nodeId)):
-        if i != j:
-            if nodeType[i] == 'S' and (nodeType[j] == 'C' or nodeType[j] == 'F'):
-                dist = drawArrow(x[i], x[j], y[i], y[j], width=0.01, color=color, ls='-')
-            if (nodeType[i] == 'D' and nodeType[j] == 'S'):
-                dist = drawArrow(x[i], x[j], y[i], y[j], width=0.01, color='#c1c1c1', ls=':')
-                #plt.annotate(round(dist), mean((x[i], y[i]), (y[j],y[j])), color='b')
-    plt.scatter(x[i], y[i], c=color, marker=marker, s=25, zorder= 5, edgecolors='#222222')
-#plt.plot(x, y)
-plt.savefig('instance' + ''+ '.png')
-
-"""
-for name in glob(path + "/route*.csv"):
-    col = (random.random(), random.random(), random.random())
-    coord = pd.read_csv(name)
-
-    node = coord['node'].values
-    x = coord['x'].values
-    y = coord['y'].values
-    flag = coord['type'].values
-    demand = coord['demand'].values
-
-    for i in range(1, len(node)):
-        drawArrow(x[i-1], x[i], y[i-1], y[i], 0.3, col)
-        """
-
-plt.savefig('plotInstance' + '.png')
+print("depot: ")
+for i in range(readLine, readLine + nDepots):
+    print("depot", table[i][0], table[i][1], table[i][2])
+    plt.scatter(float(table[i][0]), float(table[i][1]), color='r', s=100, marker='s', alpha=0.8, zorder=1)
+    readLine += 1;
+print("Satelites: ")
+for i in range(readLine, readLine + nSats):
+    print("sat", table[i][0], table[i][1], table[i][2])
+    plt.scatter(float(table[i][0]), float(table[i][1]), color='g', s=100, marker='d', alpha=0.8, zorder=10)
+    readLine += 1;
+print("RSs: ")
+for i in range(readLine, readLine + nRss):
+    print("rs", table[i][0], table[i][1], table[i][2])
+    plt.scatter(float(table[i][0]), float(table[i][1]), color='b', s=100, marker='^', alpha=0.8, zorder=5)
+    readLine += 1;
+print("Custumers: ")
+for i in range(readLine, readLine + nCusts):
+    print("cust", table[i][0], table[i][1], table[i][2])
+    plt.scatter(float(table[i][0]), float(table[i][1]), color='black', s=100, marker='o', alpha=0.8, zorder=1)
+    #plt.annotate(table[i][2],(table[i][0],table[i][1]), color='r')
+    #plt.annotate(table[i][5],(table[i][0],table[i][1]-5), color='black')
+    #plt.annotate(table[i][6],(table[i][0],table[i][1]-10), color='black')
+    text = str(int(table[i][2])) + "\n" + str(int(table[i][5])) + ", " +str(int(table[i][6]))
+    ax.text(table[i][0], table[i][1]-5, text, fontsize=8,
+            verticalalignment='top', bbox=props)
+    readLine += 1;
+ax.set_title(str(nTrucks) + ' trucks'+ "(cap: " + str(truckCap) + ")"', '+ str(nEvs) + ' evs' + "(cap: " + str(evCap) + ")" + '\n')
+ax.annotate('Footnote added below the chart with a smaller font',
+            xy = (1.0, -0.2),
+            ha='right',
+            va="center",
+            fontsize=14)
+plt.savefig('test' + 'vai'+ '.png')
