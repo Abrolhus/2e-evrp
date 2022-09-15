@@ -14,7 +14,8 @@ namespace GreedyAlgNS
     void greedy(Solution &Sol, const Instance &Inst, const float alpha, const float beta);
     bool visitAllClientes(std::vector<int> &visitedClients, const Instance &Inst);
     bool existeDemandaNaoAtendida(std::vector<float> &demandaNaoAtendida);
-
+    float palpiteTempoFinalPrimeiroNivel(const Instance& inst);
+    bool insereEstacao(int rotaId, int satId);
 
     class Candidato
     {
@@ -25,6 +26,7 @@ namespace GreedyAlgNS
         float demand = 0.0;
         double incrementoDistancia = 0.0;
         int pos = -1;
+        double tempoSaida = 0.0;
 
         Candidato(int _rotaId, int _satelliteId, float _demand, double _incrDist):rotaId(_rotaId), satelliteId(_satelliteId),
             demand(_demand), incrementoDistancia(_incrDist){};
@@ -68,7 +70,9 @@ namespace GreedyAlgNS
 
 
     bool canInsert(EvRoute &evRoute, int node, const Instance &Instance, Insertion &insertion);
+    bool canInsertSemBateria(EvRoute &evRoute, int node, const Instance &Instance, Insertion &insertion);
     bool insert(EvRoute &evRoute, Insertion& insertion, const Instance& Inst);
+    bool verificaViabilidadeSatelite(double tempoChegada, Satelite &satelite, const Instance &instance, bool modficaSatelite);
 }
 
 #endif //INC_2E_EVRP_GREEDYALGORITHM_H

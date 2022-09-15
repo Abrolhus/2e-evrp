@@ -6,6 +6,28 @@
 #include "LocalSearch.h"
 #include "ViabilizadorRotaEv.h"
 
+struct comparaCliente { // TODO: verifica na instancia qual cliente tem tempo final mais proximo
+    bool operator() (const int& lhs, const int& rhs) const {
+        return false;
+    }
+};
+
+float GreedyAlgNS::palpiteTempoFinalPrimeiroNivel(const Instance &inst){
+    int depotId = inst.getDepotIndex();
+    float bestDistance = -1.0f;
+    //> percorre todos os satelites procurando a maior distancia ate o deposito
+    for(int i = inst.getFirstSatIndex(); i <= inst.getEndSatIndex(); i++){
+        float distance = inst.getDistance(depotId, i);
+        if(distance > bestDistance){
+            bestDistance = distance;
+        }
+    }
+    if( bestDistance == -1.0f){
+        PRINT_DEBUG("", "ERRO @ GreedyAlgNS::palpiteTempoFinalPrimeiroNivel -> maior distancia = -1\n\n");
+        throw "ERRO";
+    }
+    return bestDistance;
+}
 
 
 using namespace GreedyAlgNS;
@@ -14,7 +36,7 @@ using namespace NS_Auxiliary;
 using namespace NS_LocalSearch;
 using namespace NameViabRotaEv;
 
-/*
+
 bool GreedyAlgNS::secondEchelonGreedy(Solution& sol, const Instance& Inst, const float alpha)
 {
 
@@ -37,47 +59,42 @@ bool GreedyAlgNS::secondEchelonGreedy(Solution& sol, const Instance& Inst, const
 
     std::fill(ItSat, ItSatEnd, -1);
     std::fill(ItClient, ItEnd, 0);
-
+    std::set<int, comparaCliente> clientsByTime;
+    // TODO: fill clientsbytime;
 
     while(!visitAllClientes(visitedClients, Inst))
     {
         std::list<Insertion> restrictedList;
 
-        for(int clientId = FistIdClient; clientId < LastIdClient + 1; ++clientId)
+        for(auto& client : clientsByTime)
+        // for(int clientId = FistIdClient; clientId < LastIdClient + 1; ++clientId)
         {
 
-            if(visitedClients[clientId] == 0)
+            if(visitedClients[client] == 0)
             {
                 for(int satId = Inst.getFirstSatIndex(); satId <= Inst.getEndSatIndex(); satId++)
                 {
                     Satelite *sat = sol.getSatelite(satId - Inst.getFirstSatIndex());
 
                     bool routeEmpty = false;
-                    for(int routeId = 0; routeId < sol.getSatelite(satId - Inst.getFirstSatIndex())->getNRoutes(); routeId++)
+                    for(int routeId = 0; routeId < sol.getSatelite(satId)->getNRoutes(); routeId++)
                     {
                         EvRoute &route = sat->getRoute(routeId);
-
                         if((route.routeSize == 2)&&(!routeEmpty) || (route.routeSize > 2))
                         {
-
                             if(route.routeSize == 2)
                                 routeEmpty = true;
-
-                            Insertion insertion(routeId);
-                            insertion.satId = satId;
-
-                            if(canInsert(route, clientId, Inst, insertion))
-                                restrictedList.push_back(insertion);
-
-
-
+                            if(route.getCurrentTime() < Inst.getClient(client).fimJanelaTempo){
+                                Insertion insertion(routeId);
+                                insertion.satId = satId;
+                                if(canInsertSemBateria(route, client, Inst, insertion))
+                                    restrictedList.push_back(insertion);
+                            }
                         }
                     }
                 }
             }
         }
-
-
 
         if(restrictedList.empty())
         {
@@ -92,19 +109,13 @@ bool GreedyAlgNS::secondEchelonGreedy(Solution& sol, const Instance& Inst, const
 
         visitedClients[topItem->clientId] = 1;
 
-
         Satelite *satelite = sol.getSatelite(topItem->satId-Inst.getFirstSatIndex());
-        satelite->demand += topItem->demand;
+        satelite->demanda += topItem->demand;
         EvRoute &evRoute = satelite->getRoute(topItem->routeId);
         insert(evRoute, *topItem, Inst);
-
-
     }
-
-
     return true;
 }
-*/
 
 
 
@@ -146,7 +157,7 @@ void GreedyAlgNS::firstEchelonGreedy(Solution &sol, const Instance &Inst, const 
         // Percorre os satellites
         for(int i=1; i < NumSatMaisDep; ++i)
         {
-            Satelite &satelite = sol.satelites[i-1];
+            Satelite &satelite = sol.satelites[i];
 
             // Verifica se a demanda não atendida eh positiva
             if(demandaNaoAtendidaSat[i] > 0.0)
@@ -172,20 +183,52 @@ void GreedyAlgNS::firstEchelonGreedy(Solution &sol, const Instance &Inst, const 
                         // Percorre todas as posicoes da rota
                         for(int p=0; (p+1) < route.routeSize; ++p)
                         {
-                            float incrementoDist = 0.0;
+                            double incrementoDist = 0.0;
 
                             // Realiza a insercao do satellite entre as posicoes p e p+1 da rota
                             const RouteNo &clienteP =  route.rota[p];
                             const RouteNo &clientePP = route.rota[p+1];
 
                             // Calcula o incremento da distancia (Sempre positivo, desigualdade triangular)
-                            incrementoDist -= Inst.getDistance(clienteP, clientePP);
-                            incrementoDist = incrementoDist+ Inst.getDistance(clienteP, i) + Inst.getDistance(i, clientePP);
+                            incrementoDist -= Inst.getDistance(clienteP.satellite, clientePP.satellite);
+                            incrementoDist = incrementoDist+ Inst.getDistance(clienteP.satellite, i) + Inst.getDistance(i, clientePP.satellite);
 
                             if(incrementoDist < candidato.incrementoDistancia)
                             {
-                                candidato.incrementoDistancia = incrementoDist;
-                                candidato.pos = p;
+
+                                // Calcula o tempo de chegada e verifica a janela de tempo
+                                const double tempoChegCand = clienteP.tempoChegada + Inst.getDistance(clienteP.satellite, i);
+
+                                bool satViavel = true;
+
+                                if(verificaViabilidadeSatelite(tempoChegCand, satelite, Inst, false))
+                                {
+                                    double tempoChegTemp = tempoChegCand + Inst.getDistance(i, clientePP.satellite);
+
+                                    // Verificar viabilidade dos outros satelites
+                                    for(int t=p+1; (t+1) < route.routeSize; ++t)
+                                    {
+                                        tempoChegTemp += Inst.getDistance(route.rota[t].satellite, route.rota[t+1].satellite);
+                                        Satelite &sateliteTemp = sol.satelites[route.rota[t+1].satellite];
+
+                                        if(!verificaViabilidadeSatelite(tempoChegTemp, sateliteTemp, Inst, false))
+                                        {
+                                            satViavel = false;
+                                            break;
+                                        }
+
+                                    }
+
+                                }
+                                else
+                                    satViavel = false;
+
+                                if(satViavel)
+                                {
+                                    candidato.incrementoDistancia = incrementoDist;
+                                    candidato.pos = p;
+                                    candidato.tempoSaida = tempoChegCand;
+                                }
                             }
                         }
 
@@ -214,8 +257,26 @@ void GreedyAlgNS::firstEchelonGreedy(Solution &sol, const Instance &Inst, const 
             // Insere candidato na solucao
             Route &route = sol.primeiroNivel[candidato.rotaId];
             shiftVectorDir(route.rota, candidato.pos + 1, 1, route.routeSize);
-            route.rota[candidato.pos + 1] = candidato.satelliteId;
+
+            route.rota[candidato.pos+1].satellite = candidato.satelliteId;
+            route.rota[candidato.pos+1].tempoChegada = candidato.tempoSaida;
             route.routeSize += 1;
+            double tempoSaida = candidato.tempoSaida;
+
+            for(int i=candidato.pos+1; (i+1) < route.routeSize; ++i)
+            {
+                const int satTemp = route.rota[i].satellite;
+                if(!verificaViabilidadeSatelite(tempoSaida, sol.satelites[satTemp], Inst, true))
+                {
+                    string satStr;
+                    sol.satelites[satTemp].print(satStr, Inst);
+
+                    cout<<"ERRO! FUNCAO 'verificaViabilidadeSatelite' DEVERIA RETORNAR TRUE. TEMPO SAIDA SATELITE: "<<tempoSaida<<"\n\tSATELITE:\n\n"<<satStr<<"\n\n";
+                    throw "ERRO!";
+                }
+
+                tempoSaida += Inst.getDistance(satTemp, route.rota[i+1].satellite);
+            }
 
             // Atualiza demanda, vetor de demanda e distancia
             route.totalDemand += candidato.demand;
@@ -226,10 +287,97 @@ void GreedyAlgNS::firstEchelonGreedy(Solution &sol, const Instance &Inst, const 
         }
         else
         {
-            // Adiciona mais um veiculo a solucao
-            sol.primeiroNivel.push_back(Inst);
-            sol.nTrucks += 1;
+            sol.viavel = false;
+            break;
         }
+    }
+
+}
+
+// Com o tempo de chegada ao satelite, eh verificado se as rotas dos EV's podem sair apos o tempo de chegada do veic a combustao
+bool GreedyAlgNS::verificaViabilidadeSatelite(const double tempoChegada, Satelite &satelite, const Instance &instance, const bool modificaSatelite)
+{
+
+    bool viavel = false;
+
+    // Verifica se os tempos de saida das rotas dos EV's eh maior que o tempo de chegada do veic a combustao
+    for(auto &tempoSaidaEv:satelite.vetTempoSaidaEvRoute)
+    {
+
+        const double tempoEv = tempoSaidaEv.evRoute->route[0].tempoSaida;
+        if(tempoEv >= tempoChegada)
+        {
+            viavel = true;
+            break;
+        }
+        else
+        {
+            // Verifica se eh possivel realizar um shift na rota
+
+            const int indice = tempoSaidaEv.evRoute->route[0].posMenorFolga;
+            const int cliente = tempoSaidaEv.evRoute->route[indice].cliente;
+            const double twFim = instance.vectCliente[cliente].fimJanelaTempo;
+
+            double diferenca = twFim - tempoSaidaEv.evRoute->route[indice].tempoCheg;
+            if(diferenca < 0.0)
+                diferenca = 0.0;
+
+            if(!((tempoEv+diferenca) >= tempoChegada))
+            {
+                viavel = false;
+                break;
+            }
+
+        }
+    }
+
+    if(!modificaSatelite)
+        return viavel;
+    else
+    {
+
+        for(auto &tempoSaidaEv:satelite.vetTempoSaidaEvRoute)
+        {
+
+            const double tempoEv = tempoSaidaEv.evRoute->route[0].tempoSaida;
+            if(tempoEv >= tempoChegada)
+            {
+                return true;
+            }
+            else
+            {
+                // Verifica se eh possivel realizar um shift na rota
+
+                const int indice = tempoSaidaEv.evRoute->route[0].posMenorFolga;
+                const int cliente = tempoSaidaEv.evRoute->route[indice].cliente;
+                const double twFim = instance.vectCliente[cliente].fimJanelaTempo;
+
+                double diferenca = twFim - tempoSaidaEv.evRoute->route[indice].tempoCheg;
+                if(diferenca < 0.0)
+                    diferenca = 0.0;
+
+                if(!((tempoEv+diferenca) >= tempoChegada))
+                {
+                    // Nao deve chegar aqui
+                    return false;
+                }
+                else
+                {
+                    if(!tempoSaidaEv.evRoute->alteraTempoSaida(tempoChegada, instance))
+                    {
+                        PRINT_DEBUG("", "ERRO AO ALTERAR O TEMPO DE SAIDA DA ROTA EV DE ID: "<<tempoSaidaEv.evRoute->idRota<<" DO SATELITE: "<<satelite.sateliteId<<"\n\n");
+                        throw "ERRO";
+                    }
+
+                }
+
+            }
+        }
+
+
+        PRINT_DEBUG("", "ERRO SATELITE: "<<satelite.sateliteId<<", DEVERIA TER PELO MENOS UMA ROTA(ORDENADAS DE FORMA CRESENTE COM TEMPO DE SAIDA) COM TEMPO DE SAIDA MAIOR OU IGUAL A "<<tempoChegada<<"\n\n");
+        throw "ERRO";
+
     }
 
 }
@@ -250,7 +398,7 @@ void GreedyAlgNS::greedy(Solution &sol, const Instance &Inst, const float alpha,
     //if(secondEchelonGreedy(sol, Inst, alpha))
 
 
-      firstEchelonGreedy(sol, Inst, beta);
+    firstEchelonGreedy(sol, Inst, beta);
 
 
 }
@@ -455,4 +603,12 @@ bool GreedyAlgNS::insert(EvRoute &evRoute, Insertion &insertion, const Instance 
 
     return true;
 }
+
 */
+bool GreedyAlgNS::insereEstacao(int rotaId, int satId) { return false; };
+
+bool GreedyAlgNS::canInsertSemBateria(EvRoute &evRoute, int node,
+                                      const Instance &Instance,
+                                      Insertion &insertion) {
+  return false;
+};
