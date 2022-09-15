@@ -106,7 +106,7 @@ bool GreedyAlgNS::secondEchelonGreedy(Solution& sol, const Instance& Inst, const
 }
 */
 
-/***
+
 
 bool GreedyAlgNS::visitAllClientes(std::vector<int> &visitedClients, const Instance &Inst)
 {
