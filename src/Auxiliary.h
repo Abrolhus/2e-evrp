@@ -5,7 +5,8 @@
 #ifndef INC_2E_EVRP_AUXILIARY_H
 #define INC_2E_EVRP_AUXILIARY_H
 
-#include <vector>
+#include <boost/container/vector.hpp>
+namespace BoostC = boost::container;
 #include <iostream>
 #include <cfloat>
 
@@ -38,7 +39,7 @@ namespace NS_Auxiliary
      *
      */
 
-    void shiftVectorDir(std::vector<T> &vector, const int pos, const int quant, const int sizeVector)
+    void shiftVectorDir(BoostC::vector<T> &vector, const int pos, const int quant, const int sizeVector)
     {
 
         for(int i=sizeVector-1; i >= pos; --i)
@@ -50,7 +51,7 @@ namespace NS_Auxiliary
 
     template<typename T>
 
-    int64_t buscaBinaria(const std::vector<T> &vector, T &ele, const int64_t tam)
+    int64_t buscaBinaria(const BoostC::vector<T> &vector, T &ele, const int64_t tam)
     {
         if(tam <= 0)
             return -1;
@@ -86,7 +87,7 @@ namespace NS_Auxiliary
 
 
     template<typename T>
-    string printVector(const std::vector<T> &vector, const int64_t tam)
+    string printVector(const BoostC::vector<T> &vector, const int64_t tam)
     {
         string str;
         for(int i=0; i < tam; ++i)

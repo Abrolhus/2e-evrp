@@ -29,7 +29,7 @@ bool NameViabRotaEv::viabilizaRotaEv(vector<int> &route, int tamRoute, const Ins
 
     //cout<<"\n\n";
 
-    std::vector<PosicaoEstacao> vectorPosicaoEstacao(instance.getN_RechargingS());
+    BoostC::vector<PosicaoEstacao> vectorPosicaoEstacao(instance.getN_RechargingS());
     int proxVectorPosEst = 0;
 
     // Encontra estacoes que sao utilizadas
@@ -52,7 +52,7 @@ bool NameViabRotaEv::viabilizaRotaEv(vector<int> &route, int tamRoute, const Ins
 
 
     // Encontra estacoes que nao sao utilizadas
-    std::vector<int> estacoesNaoUtilizadas(instance.getN_RechargingS());
+    BoostC::vector<int> estacoesNaoUtilizadas(instance.getN_RechargingS());
     int proxEstN = 0;
     PosicaoEstacao posicaoEstacao;
 

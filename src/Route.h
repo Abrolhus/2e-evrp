@@ -2,7 +2,8 @@
 #define ROUTE_H
 
 #include "Instance.h"
-#include <vector>
+#include <boost/container/vector.hpp>
+namespace BoostC = boost::container;
 #include <iostream>
 
 class RouteNo
@@ -25,7 +26,7 @@ public:
     void print(std::string &str);
     bool checkDistence(const Instance &instance, double *dist);
 
-    std::vector<RouteNo> rota;
+    BoostC::vector<RouteNo> rota;
     int routeSize = 2;
     int routeSizeMax = -1;
 
@@ -34,7 +35,7 @@ public:
 
     // Armazena a demanda levada pelo veiculo de cada satellite.
     // Possui uma entrada para cada satellite da instancia + deposito!
-    std::vector<float> satelliteDemand;
+    BoostC::vector<float> satelliteDemand;
 };
 
 #endif

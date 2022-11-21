@@ -335,8 +335,8 @@ Instance* getInstanceFromFile(std::string &fileName){
     std::string line;
     stringstream ss, ssaux, ssaux2;
     int nSats=0, nClients=0, nRS=0;
-    std::vector<float> demands;
-    std::vector<std::pair<float, float>> coordinates;
+    BoostC::vector<float> demands;
+    BoostC::vector<std::pair<float, float>> coordinates;
     while(getline(file, line)){
         // std::cout << line << std::endl;
         // std::cout << "first char: " << line[0] << std::endl;
@@ -377,7 +377,7 @@ Instance* getInstanceFromFile(std::string &fileName){
     ssaux2 >> evBattery;
     //cout << ".";
     file.close();
-    std::vector<std::vector<double>> distMat(demands.size(), std::vector<double>(demands.size(), -1));
+    BoostC::vector<BoostC::vector<double>> distMat(demands.size(), BoostC::vector<double>(demands.size(), -1));
     for(int i = 0; i < distMat.size(); i++){
         for(int j = 0; j < distMat.size(); j++){
             distMat[i][j] = distance(coordinates[i], coordinates[j]);

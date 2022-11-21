@@ -114,7 +114,7 @@ public:
         return route[pos];
     }
 
-    std::vector<EvNo> route;
+    BoostC::vector<EvNo> route;
 
     double distancia = 0.0;
     int routeSize = 2;
@@ -127,7 +127,7 @@ public:
     bool setUtilizacaoRecarga(int id, int utilizacao);
 
 private:
-    std::vector<EvRecarga> vetRecarga;
+    BoostC::vector<EvRecarga> vetRecarga;
     int numRecarga=-1;
     int numMaxUtilizacao=-1;
     const int firstRechargingSIndex;

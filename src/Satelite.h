@@ -1,7 +1,8 @@
 #ifndef INC_2E_EVRP_SATELITE_H
 #define INC_2E_EVRP_SATELITE_H
 
-#include <vector>
+#include <boost/container/vector.hpp>
+namespace BoostC = boost::container;
 #include "EvRoute.h"
 #include "Instance.h"
 
@@ -35,10 +36,10 @@ public:
     void print(const Instance &instance);
 
 
-    std::vector<EvRoute> vetEvRoute;
+    BoostC::vector<EvRoute> vetEvRoute;
 
     // O vetor deve estar ordenado antes de ser utilizado
-    std::vector<TempoSaidaEvRoute> vetTempoSaidaEvRoute;
+    BoostC::vector<TempoSaidaEvRoute> vetTempoSaidaEvRoute;
 
     void sortVetTempoSaidaEvRoute(){std::sort(vetTempoSaidaEvRoute.begin(), vetTempoSaidaEvRoute.end());};
 

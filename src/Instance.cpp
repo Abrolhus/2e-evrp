@@ -6,9 +6,9 @@
 using namespace std;
 
 /*
-Instance::Instance(std::vector<std::vector<double>> &distMat, float truckCap, float evCap, float evBattery, int nSats,
-                   int nClients, int nRS, std::vector<std::pair<float, float>> &coordinates,
-                   std::vector<float> &demands) {
+Instance::Instance(BoostC::vector<BoostC::vector<double>> &distMat, float truckCap, float evCap, float evBattery, int nSats,
+                   int nClients, int nRS, BoostC::vector<std::pair<float, float>> &coordinates,
+                   BoostC::vector<float> &demands) {
     this->demands = demands;
     this->coordinates = coordinates;
     this->distMat = distMat;

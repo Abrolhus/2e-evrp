@@ -2,7 +2,8 @@
 #define INSTANCE_H
 
 #include <iostream>
-#include <vector>
+#include <boost/container/vector.hpp>
+namespace BoostC = boost::container;
 #include <boost/numeric/ublas/matrix.hpp>
 using namespace boost::numeric;
 
@@ -77,8 +78,8 @@ public:
 //private:
     ublas::matrix<double> matDist;
 
-    std::vector<VeiculoInst> vectVeiculo;           // veic a combustao + veic EV
-    std::vector<ClienteInst> vectCliente;           // deposito, satellites, estacoes e clientes
+    BoostC::vector<VeiculoInst> vectVeiculo;           // veic a combustao + veic EV
+    BoostC::vector<ClienteInst> vectCliente;           // deposito, satellites, estacoes e clientes
 
     int numSats, numClients, numRechargingS, numEv, numTruck;
     int numNos; // deposito + numSats + numRechargingS + numClients

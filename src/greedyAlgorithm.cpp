@@ -40,7 +40,7 @@ using namespace NameViabRotaEv;
 bool GreedyAlgNS::secondEchelonGreedy(Solution& sol, const Instance& Inst, const float alpha)
 {
 
-    std::vector<int> visitedClients(1+Inst.getNSats()+Inst.getNClients());
+    BoostC::vector<int> visitedClients(1+Inst.getNSats()+Inst.getNClients());
     visitedClients[0]       = -1;
 
     for(int i=1; i < Inst.getNSats()+1; ++i)
@@ -119,7 +119,7 @@ bool GreedyAlgNS::secondEchelonGreedy(Solution& sol, const Instance& Inst, const
 
 
 
-bool GreedyAlgNS::visitAllClientes(std::vector<int> &visitedClients, const Instance &Inst)
+bool GreedyAlgNS::visitAllClientes(BoostC::vector<int> &visitedClients, const Instance &Inst)
 {
 
     auto itClient = visitedClients.begin() + Inst.getFirstClientIndex();
@@ -136,7 +136,7 @@ void GreedyAlgNS::firstEchelonGreedy(Solution &sol, const Instance &Inst, const 
 
     // Cria o vetor com a demanda de cada satellite
 
-    std::vector<float> demandaNaoAtendidaSat;
+    BoostC::vector<float> demandaNaoAtendidaSat;
     demandaNaoAtendidaSat.reserve(sol.getNSatelites()+1);
     int satId = 1;
     demandaNaoAtendidaSat.push_back(0.0);
@@ -382,7 +382,7 @@ bool GreedyAlgNS::verificaViabilidadeSatelite(const double tempoChegada, Satelit
 
 }
 
-bool GreedyAlgNS::existeDemandaNaoAtendida(std::vector<float> &demandaNaoAtendida)
+bool GreedyAlgNS::existeDemandaNaoAtendida(BoostC::vector<float> &demandaNaoAtendida)
 {
     for(float dem:demandaNaoAtendida)
     {

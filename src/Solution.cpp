@@ -115,7 +115,7 @@ bool Solution::checkSolution(std::string &erro, const Instance &inst)
 
     // Verifica se as demandas dos satelites sao atendidas
 
-    std::vector<float> satelliteDemand;
+    BoostC::vector<float> satelliteDemand;
     satelliteDemand.reserve(inst.getNSats() + 1);
 
     for(int i=0; i < inst.getNSats() + 1; ++i)

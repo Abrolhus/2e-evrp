@@ -75,8 +75,8 @@ namespace NS_LocalSearch {
 
 
 
-    void achaEstacoes(const EvRoute *evRoute, std::vector<PosicaoEstacao> &vectorEstacoes, const Instance &instance);
-    void achaEstacoesEmComun(const std::vector<PosicaoEstacao> &vectorRota0Estacoes, const std::vector<PosicaoEstacao> &vectorRota1Estacoes, std::vector<PosRota0Rota1Estacao> &vectorEsracoesEmComun);
+    void achaEstacoes(const EvRoute *evRoute, BoostC::vector<PosicaoEstacao> &vectorEstacoes, const Instance &instance);
+    void achaEstacoesEmComun(const BoostC::vector<PosicaoEstacao> &vectorRota0Estacoes, const BoostC::vector<PosicaoEstacao> &vectorRota1Estacoes, BoostC::vector<PosRota0Rota1Estacao> &vectorEsracoesEmComun);
 
 
     bool mvCrossIntraSatellite(Solution &solution, const Instance &instance);
@@ -89,13 +89,13 @@ namespace NS_LocalSearch {
 
     void getMov(int movId, string &mov);
 
-    int buscaEstacao(const std::vector<PosRota0Rota1Estacao> &vector, const int estacao);
-    int buscaEstacao(const std::vector<PosicaoEstacao> &vector, const int estacao);
+    int buscaEstacao(const BoostC::vector<PosRota0Rota1Estacao> &vector, const int estacao);
+    int buscaEstacao(const BoostC::vector<PosicaoEstacao> &vector, const int estacao);
 
     // Assumi-se que a sequencia esta correta, vector bateriaRestante deve ser corrigido apos <pos>
     bool ajustaBateriaRestante(EvRoute *evRoute, const int pos, const Instance &instance);
 
-    float calculaNovaDistanciaRoute0Cross(EvRoute *evRoute0, const std::vector<int> &evRoute1, const int tamEvRoute1, std::vector<PosRota0Rota1Estacao> &vectorEstacoesEmComun, const int pos0, const int pos1,
+    float calculaNovaDistanciaRoute0Cross(EvRoute *evRoute0, const BoostC::vector<int> &evRoute1, const int tamEvRoute1, BoostC::vector<PosRota0Rota1Estacao> &vectorEstacoesEmComun, const int pos0, const int pos1,
                                           const float distanciaAcumRota0, const Instance &instance, const bool escreveRoute0, const bool inverteRotaEmVectorEstacoesEmComun, NameViabRotaEv::InsercaoEstacao &insercaoEstacao);
 
     float calculaDistanciaAcumulada(const vector<int> &rota, const int pos, const Instance &instance);

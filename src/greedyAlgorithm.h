@@ -4,7 +4,8 @@
 #include "Solution.h"
 #include "ViabilizadorRotaEv.h"
 #include <list>
-#include <vector>
+#include <boost/container/vector.hpp>
+namespace BoostC = boost::container;
 
 namespace GreedyAlgNS
 {
@@ -12,8 +13,8 @@ namespace GreedyAlgNS
     bool secondEchelonGreedy(Solution& Sol, const Instance& Inst, float alpha);
     void firstEchelonGreedy(Solution &Sol, const Instance &Inst, const float beta);
     void greedy(Solution &Sol, const Instance &Inst, const float alpha, const float beta);
-    bool visitAllClientes(std::vector<int> &visitedClients, const Instance &Inst);
-    bool existeDemandaNaoAtendida(std::vector<float> &demandaNaoAtendida);
+    bool visitAllClientes(BoostC::vector<int> &visitedClients, const Instance &Inst);
+    bool existeDemandaNaoAtendida(BoostC::vector<float> &demandaNaoAtendida);
     float palpiteTempoFinalPrimeiroNivel(const Instance& inst);
     bool insereEstacao(int rotaId, int satId);
 

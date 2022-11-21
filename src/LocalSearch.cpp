@@ -814,13 +814,13 @@ bool NS_LocalSearch::mvCrossIntraSatellite(Solution &solution, const Instance &i
 
 
 
-        std::vector<PosicaoEstacao> vectorEstacoesRoute0;
+        BoostC::vector<PosicaoEstacao> vectorEstacoesRoute0;
         achaEstacoes(evRouteSol0, vectorEstacoesRoute0, instance);
 
-        std::vector<PosicaoEstacao> vectorEstacoesRoute1;
+        BoostC::vector<PosicaoEstacao> vectorEstacoesRoute1;
         achaEstacoes(evRouteSol1, vectorEstacoesRoute1, instance);
 
-        std::vector<PosRota0Rota1Estacao> vectorEstacoesEmComun;
+        BoostC::vector<PosRota0Rota1Estacao> vectorEstacoesEmComun;
         achaEstacoesEmComun(vectorEstacoesRoute0, vectorEstacoesRoute1, vectorEstacoesEmComun);
 
 
@@ -923,7 +923,7 @@ float NS_LocalSearch::calculaDistanciaAcumulada(const vector<int> &rota, const i
 }
 
 
-int NS_LocalSearch::buscaEstacao(const std::vector<PosRota0Rota1Estacao> &vector, const int estacao)
+int NS_LocalSearch::buscaEstacao(const BoostC::vector<PosRota0Rota1Estacao> &vector, const int estacao)
 {
 
     for(int i=0; i<vector.size(); ++i)
@@ -989,15 +989,15 @@ void NS_LocalSearch::crossAux(const pair<int, int> satIdPair, const pair<int, in
         return;
 
     // Armazena Estacoes de cada rota com (posicao de route; recharging station id)
-    std::vector<PosicaoEstacao> vectorEstacoesRoute0;
+    BoostC::vector<PosicaoEstacao> vectorEstacoesRoute0;
     achaEstacoes(evRoute0, vectorEstacoesRoute0, instance);
 
-    std::vector<PosicaoEstacao> vectorEstacoesRoute1;
+    BoostC::vector<PosicaoEstacao> vectorEstacoesRoute1;
     achaEstacoes(evRoute1, vectorEstacoesRoute1, instance);
 
 
     // Armazena estacoes de recarga que sao usadas pos ambas as rotas
-    std::vector<PosRota0Rota1Estacao> vectorEstacoesEmComum;
+    BoostC::vector<PosRota0Rota1Estacao> vectorEstacoesEmComum;
     achaEstacoesEmComun(vectorEstacoesRoute0, vectorEstacoesRoute1, vectorEstacoesEmComum);
 
 
@@ -1083,7 +1083,7 @@ void NS_LocalSearch::crossAux(const pair<int, int> satIdPair, const pair<int, in
 
 }
 
-void NS_LocalSearch::achaEstacoes(const EvRoute  *const evRoute, std::vector<PosicaoEstacao> &vectorEstacoes, const Instance &instance)
+void NS_LocalSearch::achaEstacoes(const EvRoute  *const evRoute, BoostC::vector<PosicaoEstacao> &vectorEstacoes, const Instance &instance)
 {
 
     vectorEstacoes.reserve(instance.getN_RechargingS());
@@ -1099,7 +1099,7 @@ void NS_LocalSearch::achaEstacoes(const EvRoute  *const evRoute, std::vector<Pos
 
 }
 
-void NS_LocalSearch::achaEstacoesEmComun(const std::vector<PosicaoEstacao> &vectorRota0Estacoes, const std::vector<PosicaoEstacao> &vectorRota1Estacoes, std::vector<PosRota0Rota1Estacao> &vectorEsracoesEmComun)
+void NS_LocalSearch::achaEstacoesEmComun(const BoostC::vector<PosicaoEstacao> &vectorRota0Estacoes, const BoostC::vector<PosicaoEstacao> &vectorRota1Estacoes, BoostC::vector<PosRota0Rota1Estacao> &vectorEsracoesEmComun)
 {
     if(vectorRota0Estacoes.empty() || vectorRota1Estacoes.empty())
         return;
@@ -1120,7 +1120,7 @@ void NS_LocalSearch::achaEstacoesEmComun(const std::vector<PosicaoEstacao> &vect
 
 }
 
-int NS_LocalSearch::buscaEstacao(const std::vector<PosicaoEstacao> &vector, const int estacao)
+int NS_LocalSearch::buscaEstacao(const BoostC::vector<PosicaoEstacao> &vector, const int estacao)
 {
     for(int i=0; i < vector.size(); ++i)
     {
@@ -1149,7 +1149,7 @@ int NS_LocalSearch::buscaEstacao(const std::vector<PosicaoEstacao> &vector, cons
  // * /
 
 //Calcula a distancia de evRoute0 apos o movimento cross na pos0 de evRoute0 e pos1 de evRoute1. A funcao tambem verifica o combustivel
-float NS_LocalSearch::calculaNovaDistanciaRoute0Cross(EvRoute *evRoute0, const std::vector<int> &evRoute1, const int tamEvRoute1, std::vector<PosRota0Rota1Estacao> &vectorEstacoesEmComun, const int pos0, const int pos1,
+float NS_LocalSearch::calculaNovaDistanciaRoute0Cross(EvRoute *evRoute0, const BoostC::vector<int> &evRoute1, const int tamEvRoute1, BoostC::vector<PosRota0Rota1Estacao> &vectorEstacoesEmComun, const int pos0, const int pos1,
                                                       const float distanciaAcumRota0, const Instance &instance, const bool escreveRoute0, const bool inverteRotaEmVectorEstacoesEmComun, NameViabRotaEv::InsercaoEstacao &insercaoEstacao)
 {
 
